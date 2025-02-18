@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" name="viewport" content="width-device-width" />
+        <title>comprehensiveviewer</title>
+        <style type="text/css">
+
+            * {
+                padding: 0;
+                margin: 0;
+                position: relative;
+                color: white;
+                user-select: none;
+            }
+
+            /* The main container. */
+            .main {
+                width: 100vw;
+                height: 100vh;
+                background-color: #191919;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            /* The container for all the entries. */
+            .container {
+                position: absolute;
+                display: inline-flex;
+                align-items: center;
+                transition: all 0.5s ease;
+                column-gap: 3vw;
+            }
+            .main.shortmode .container {
+                display: inline-grid;
+                row-gap: 3vh;
+            }
+
+            /* The entries themselves. */
+            .entries {
+                width: 18vw;
+                height: 16vh;
+                transition: all 0.5s ease;
+                filter: drop-shadow(0 0 8px #00000033);
+                background-color: #888888;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .main.shortmode .entries {
+                height: 12vh;
+                width: 20vw;
+            }
+            .text {
+                font-family: sans;
+                font-style: oblique;
+                font-size: calc(1vw + 1vh);
+            }
+
+            /* The left and right buttons. */
+            .buttons {
+                position: absolute;
+                width: 128px;
+                height: 128px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                filter: drop-shadow(0 0 8px #00000033);
+                z-index: 2;
+                display: grid;
+                align-items: center;
+            }
+            .buttons:hover {
+                transform: translate(0,-5px);
+            }
+            .buttons:nth-child(1) {
+                left: 10vw;
+            }
+            .buttons:nth-child(2) {
+                right: 10vw;
+            }
+            .main.shortmode .buttons {
+                transform: rotate(90deg);
+                left: inherit;
+                right: inherit;
+            }
+            .main.shortmode .buttons:nth-child(1) {
+                top: 10vh;
+            }
+            .main.shortmode .buttons:nth-child(2) {
+                bottom: 10vh;
+            }
+            .bar {
+                width: 100%;
+                height: 30%;
+                background-color: white;
+            }
+            .buttons:nth-child(1) .bar:nth-child(1) {
+                transform: rotate(-45deg) translateY(-10px);
+            }
+            .buttons:nth-child(1) .bar:nth-child(2) {
+                transform: rotate(45deg) translateY(10px);
+            }
+            .buttons:nth-child(2) .bar:nth-child(1) {
+                transform: rotate(45deg) translateY(-10px);
+            }
+            .buttons:nth-child(2) .bar:nth-child(2) {
+                transform: rotate(-45deg) translateY(10px);
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <!-- The main container. -->
+        <div class="main">
+
+            <!-- The left and right buttons. -->
+            <div class="buttons">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="buttons">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <!-- The container for all the entries. -->
+            <div class="container">
+
+              <!-- The entries. No need to give each an ID; just add and run! -->
+              <div class="entries">
+                  <div class="text">Entry 1</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 2</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 3</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 4</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 5</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 6</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 7</div>
+              </div>
+              <div class="entries">
+                  <div class="text">Entry 8</div>
+              </div>
+
+            </div>
+
+        </div>
+
+        <!-- Import jQuery library. -->
+        <script src="jquery.js"></script>
+
+        <!-- JavaScript code. -->
+        <script>
+
+            (function() {
+
+                // Variables.
+                var index = 1
+                var count = document.querySelectorAll('.entries').length
+                const screen = window.matchMedia("(max-width: 1040px)")
+                const main = document.querySelector('.main')
+
+                // Activates short mode if screen width is under 1040 pixels.
+                function shortmode(screen) {
+                    if (screen.matches) {
+                       main.classList.add('shortmode');
+                    } else {
+                       main.classList.remove('shortmode');
+                    }
+                }
+
+                // Call the short mode function at startup.
+                shortmode(screen)
+
+                // Call the short mode function whenever the screen is resized.
+                screen.addEventListener("change", function() {
+                    shortmode(screen);
+                })
+
+                // Called whenever the left or right buttons are clicked.
+                function indexcheck() {
+
+                    // Failsafes for if index somehow goes out of bounds.
+                    if (index < 1) {
+                        index = 1;
+                    }
+                    if (index > count) {
+                        index = count;
+                    }
+
+                    // Hides left button if at first entry.
+                    if (index == 1) {
+                        $('.buttons:nth-child(1)').css('opacity', '0');
+                        setTimeout(function() {
+                            $('.buttons:nth-child(1)').css('display', 'none');
+                        }, 300);
+                    } else {
+                        $('.buttons:nth-child(1)').css('display', 'grid');
+                        $('.buttons:nth-child(1)').css('opacity', '1');
+                    }
+
+                    // Hides right button if at last entry.
+                    if (index == count) {
+                        $('.buttons:nth-child(2)').css('opacity', '0');
+                        setTimeout(function() {
+                            $('.buttons:nth-child(2)').css('display', 'none');
+                        }, 300);
+                    } else {
+                        $('.buttons:nth-child(2)').css('display', 'grid');
+                        $('.buttons:nth-child(2)').css('opacity', '1');
+                    }
+
+                    // Resets transform for all entries.
+                    for (i=1; i<count+1; i++) {
+                        $('.entries:nth-child('+i+')').css('transform', 'inherit');
+                        $('.entries:nth-child('+i+')').css('z-index', 'inherit');
+                        $('.container').css('top', 'inherit');
+                        $('.container').css('left', 'inherit');
+                    }
+
+                    if (screen.matches) {
+
+                        // Scrolls up and down if short mode is on.
+                        $('.container').css('top', index*15*-1+59+'vh');
+                        $('.entries:nth-child('+(index+2)+')').css('transform', 'scale(1) perspective(800px) rotateX(45deg) translateY(-7vw)');
+                        $('.entries:nth-child('+(index-2)+')').css('transform', 'scale(1) perspective(800px) rotateX(-45deg) translateY(7vw)');
+                        $('.entries:nth-child('+(index+1)+')').css('transform', 'scale(1.5) perspective(800px) rotateX(30deg)');
+                        $('.entries:nth-child('+(index-1)+')').css('transform', 'scale(1.5) perspective(800px) rotateX(-30deg)');
+                    } else {
+
+                        // Scrolls left and right if short mode is not on.
+                        $('.container').css('left', index*21*-1+62+'vw');
+                        $('.entries:nth-child('+(index+2)+')').css('transform', 'scale(1) perspective(800px) rotateY(-45deg) translateX(-10vw)');
+                        $('.entries:nth-child('+(index-2)+')').css('transform', 'scale(1) perspective(800px) rotateY(45deg) translateX(10vw)');
+                        $('.entries:nth-child('+(index+1)+')').css('transform', 'scale(1.5) perspective(800px) rotateY(-30deg)');
+                        $('.entries:nth-child('+(index-1)+')').css('transform', 'scale(1.5) perspective(800px) rotateY(30deg)');
+                    }
+
+                    // Set z-index and scale for remaining entries.
+                    $('.entries:nth-child('+index+')').css('transform', 'scale(2.5)');
+                    $('.entries:nth-child('+(index+1)+')').css('z-index', '1');
+                    $('.entries:nth-child('+(index-1)+')').css('z-index', '1');
+                    $('.entries:nth-child('+index+')').css('z-index', '2');
+
+                }
+
+                // Decrease index by 1 and recheck when left button is clicked.
+                $('.buttons:nth-child(1)').on('click', function() {
+                    index = --index;
+                    indexcheck();
+                })
+
+                // Increase index by 1 and recheck when right button is clicked.
+                $('.buttons:nth-child(2)').on('click', function() {
+                    index = ++index;
+                    indexcheck();
+                })
+
+                // Call indexcheck on startup.
+                indexcheck()
+
+            })();
+
+        </script>
+
+    </body>
+
+</html>
